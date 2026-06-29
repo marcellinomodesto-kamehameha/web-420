@@ -6,8 +6,10 @@ Description: Express server setup for the In-N-Out-Books API application.
 */
 
 const express = require("express")
+const books = require("../Database/books");
 
 const app = express();
+app.use(express.json());
 
 // GET route for landing page
 app.get("/", (req, res) => {
@@ -150,6 +152,61 @@ app.get("/", (req, res) => {
     </body>
     </html>
     `);
+});
+
+// GET all books
+app.get("/api/books", async (req, res) => {
+
+    try {
+
+        const bookList = await books.find();
+
+        res.status(200).send(bookList);
+
+    } catch (err) {
+
+        res.status(500).send({
+            message: err.message
+        });
+
+    }
+
+});
+
+// GET single book by id
+app.get("/api/books/:id", async (req, res) => {
+
+    try {
+
+        const id = Number(req.params.id);
+
+
+        // Check if id is a number
+        if (isNaN(id)) {
+
+            return res.status(400).send({
+                message: "ID must be a number"
+            });
+
+        }
+
+
+        const book = await books.findOne({
+            id: id
+        });
+
+
+        res.status(200).send(book);
+
+
+    } catch (err) {
+
+        res.status(404).send({
+            message: err.message
+        });
+
+    }
+
 });
 
 // 404 Error Middleware
