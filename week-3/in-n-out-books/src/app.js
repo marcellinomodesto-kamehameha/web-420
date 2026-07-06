@@ -5,228 +5,231 @@ File: app.js
 Description: Express server setup for the In-N-Out-Books API application.
 */
 
-const express = require("express")
+const express = require("express");
 const books = require("../Database/books");
 
 const app = express();
+
 app.use(express.json());
 
-// GET route for landing page
+/* HOME ROUTE */
 app.get("/", (req, res) => {
-    res.send(`
-        <!DOCTYPE html>
+  res.send(`
+    <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>In-N-Out-Books</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>In-N-Out-Books</title>
 
-        <style>
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                margin: 0;
-                background-color: #986d52;
-                color: #333;
-            }
+      <style>
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+          margin: 0;
+          background-color: #986d52;
+          color: #333;
+        }
 
-            header {
-                background-color: #55402c;
-                color: white;
-                padding: 30px;
-                text-align: center;
-            }
+        header {
+          background-color: #55402c;
+          color: white;
+          padding: 30px;
+          text-align: center;
+        }
 
-            nav {
-                background-color: #ffffff;
-                padding: 10px;
-                text-align: center;
-            }
+        nav {
+          background-color: #ffffff;
+          padding: 10px;
+          text-align: center;
+        }
 
-            nav a {
-                color: #2c3e50;
-                margin: 15px;
-                text-decoration: none;
-            }
+        nav a {
+          color: #2c3e50;
+          margin: 15px;
+          text-decoration: none;
+        }
 
-            main {
-                padding: 30px;
-            }
+        main {
+          padding: 30px;
+        }
 
-            section {
-                background-color: white;
-                margin: 20px auto;
-                padding: 20px;
-                max-width: 900px;
-                border-radius: 8px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            }
+        section {
+          background-color: white;
+          margin: 20px auto;
+          padding: 20px;
+          max-width: 900px;
+          border-radius: 8px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-            h2 {
-                color: #2c3e50;
-            }
+        h2 {
+          color: #2c3e50;
+        }
 
-            footer {
-                background-color: #2c3e50;
-                color: white;
-                text-align: center;
-                padding: 15px;
-            }
+        footer {
+          background-color: #2c3e50;
+          color: white;
+          text-align: center;
+          padding: 15px;
+        }
 
-            ul {
-                line-height: 1.8;
-            }
-        </style>
+        ul {
+          line-height: 1.8;
+        }
+      </style>
     </head>
 
     <body>
+      <header>
+        <h1>Welcome to In-N-Out-Books</h1>
+        <p>A new and simple way to manage your book collection.</p>
+      </header>
 
-        <header>
-            <h1>Welcome to In-N-Out-Books</h1>
-            <p>A new and simple way to manage your book collection.</p>
-        </header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#">Books</a>
+        <a href="#">Collection</a>
+      </nav>
 
+      <main>
+        <section>
+          <h2>About In-N-Out-Books</h2>
+          <p>
+            In-N-Out-Books is an API-driven application designed to help
+            readers organize and manage their personal book collections.
+          </p>
+        </section>
 
-        <nav>
-            <a href="/">Home</a>
-            <a href="#">Books</a>
-            <a href="#">Collection</a>
-        </nav>
+        <section>
+          <h2>Top Selling Books</h2>
+          <ul>
+            <li>Don Quixote - Miguel de Cervantes</li>
+            <li>Harry Potter and the Sorcerer's Stone - J.K. Rowling</li>
+            <li>The Hobbit - J.R.R. Tolkien</li>
+            <li>Atomic Habits - James Clear</li>
+          </ul>
+        </section>
 
+        <section>
+          <h2>Hours of Operation</h2>
+          <p>
+            Monday - Friday: 9:00 AM - 9:00 PM<br>
+            Saturday: 10:00 AM - 6:00 PM<br>
+            Sunday: Closed
+          </p>
+        </section>
 
-        <main>
+        <section>
+          <h2>Contact Information</h2>
+          <p>
+            Email: support@innoutbooks.com<br>
+            Phone: (555) 123-4567<br>
+            Address: 123 Book Street, Library City
+          </p>
+        </section>
+      </main>
 
-            <section>
-                <h2>About In-N-Out-Books</h2>
-                <p>
-                    In-N-Out-Books is an API-driven application designed to help
-                    readers organize and manage their personal book collections.
-                    Users can keep track of books they own, discover epic new stories,
-                    and maintain a digital library of their favorite titles.
-                </p>
-            </section>
-
-
-            <section>
-                <h2>Top Selling Books</h2>
-
-                <ul>
-                    <li>Don Quixote - Miguel de Cervantes</li>
-                    <li>Harry Potter and the Sorcerer's Stone - J.K. Rowling</li>
-                    <li>The Hobbit - J.R.R. Tolkien</li>
-                    <li>Atomic Habits - James Clear</li>
-                </ul>
-
-            </section>
-
-
-            <section>
-                <h2>Hours of Operation</h2>
-
-                <p>
-                    Monday - Friday: 9:00 AM - 9:00 PM<br>
-                    Saturday: 10:00 AM - 6:00 PM<br>
-                    Sunday: Closed
-                </p>
-
-            </section>
-
-
-            <section>
-                <h2>Contact Information</h2>
-
-                <p>
-                    Email: support@innoutbooks.com<br>
-                    Phone: (555) 123-4567<br>
-                    Address: 123 Book Street, Library City
-                </p>
-
-            </section>
-
-        </main>
-
-
-        <footer>
-            <p>&copy; 2026 In-N-Out-Books. All Rights Reserved.</p>
-        </footer>
-
+      <footer>
+        <p>&copy; 2026 In-N-Out-Books. All Rights Reserved.</p>
+      </footer>
     </body>
     </html>
-    `);
+  `);
 });
 
-// GET all books
+/* GET ALL BOOKS*/
 app.get("/api/books", async (req, res) => {
-
-    try {
-
-        const bookList = await books.find();
-
-        res.status(200).send(bookList);
-
-    } catch (err) {
-
-        res.status(500).send({
-            message: err.message
-        });
-
-    }
-
+  try {
+    const bookList = await books.find();
+    res.status(200).send(bookList);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    });
+  }
 });
 
-// GET single book by id
+/* GET BOOK BY ID*/
 app.get("/api/books/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
 
-    try {
-
-        const id = Number(req.params.id);
-
-
-        // Check if id is a number
-        if (isNaN(id)) {
-
-            return res.status(400).send({
-                message: "ID must be a number"
-            });
-
-        }
-
-
-        const book = await books.findOne({
-            id: id
-        });
-
-
-        res.status(200).send(book);
-
-
-    } catch (err) {
-
-        res.status(404).send({
-            message: err.message
-        });
-
+    if (isNaN(id)) {
+      return res.status(400).send({
+        message: "ID must be a number"
+      });
     }
 
-});
+    const book = await books.findOne({ id });
 
-// 404 Error Middleware
-app.use((req, res) => {
+    res.status(200).send(book);
+
+  } catch (err) {
     res.status(404).send({
-        error: "Page not found"
+      message: err.message
     });
+  }
 });
 
-// 500 Error Middleware
+/* CREATE BOOK*/
+app.post("/api/books", async (req, res) => {
+  try {
+    const { id, title, author } = req.body;
+
+    if (!title) {
+      return res.status(400).send({
+        message: "Book title is required"
+      });
+    }
+
+    const newBook = { id, title, author };
+
+    await books.insertOne(newBook);
+
+    res.status(201).send(newBook);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    });
+  }
+});
+
+/* DELETE BOOK*/
+app.delete("/api/books/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).send({
+        message: "ID must be a number"
+      });
+    }
+
+    await books.deleteOne({ id });
+
+    res.status(204).send();
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message
+    });
+  }
+});
+
+/*404 HANDLER */
+app.use((req, res) => {
+  res.status(404).send({
+    error: "Page not found"
+  });
+});
+
+/*500 HANDLER*/
 app.use((err, req, res, next) => {
-    res.status(500).json({
-        error: err.message,
-        stack: process.env.NODE_ENV === "development"
-            ? err.stack
-            : undefined
-    });
-
+  res.status(500).json({
+    error: err.message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined
+  });
 });
 
-
-// Export application
 module.exports = app;
