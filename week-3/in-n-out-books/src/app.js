@@ -217,6 +217,46 @@ app.delete("/api/books/:id", async (req, res) => {
   }
 });
 
+/* UPDATE BOOK*/
+app.put("/api/books/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).send({
+        message: "Input must be a number"
+      });
+    }
+
+    const { title, author } = req.body;
+
+    if (!title) {
+      return res.status(400).send({
+        message: "Bad Request"
+      });
+    }
+
+    await books.updateOne(
+      { id },
+      {
+        id,
+        title,
+        author
+      }
+    );
+
+    res.status(204).send();
+
+  } catch (err) {
+  console.error(err);
+
+  res.status(err.status || 500).send({
+    message: err.message
+    });
+  }
+});
+
+
 /*404 HANDLER */
 app.use((req, res) => {
   res.status(404).send({
