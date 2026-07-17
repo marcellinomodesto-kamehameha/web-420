@@ -7,6 +7,8 @@ Description: Express server setup for the In-N-Out-Books API application.
 
 const express = require("express");
 const books = require("../Database/books");
+const users = require("../Database/users");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 
@@ -256,6 +258,40 @@ app.put("/api/books/:id", async (req, res) => {
   }
 });
 
+/* LOGIN USER */
+app.post ("/api/login", async (req, res) => {
+  try {
+    const {email, password} = req.body;
+
+      if (!email||!password) {
+        return res.status(400).send({
+          message: "Bad Request"
+        });
+      }
+
+     /* FIND USER BY EMAIL */
+    const user = await users.findOne({ email });
+
+    /* CHECK PASSWORD */
+    const isValidPassword = bcrypt.compareSync(password, user.password);
+
+    if (!isValidPassword) {
+      return res.status(401).send({
+        message: "Unauthorized"
+      });
+    }
+
+    /* LOGIN SUCCESSFUL */
+    res.status(200).send({
+      message: "Authentication successful"
+    });
+
+  } catch (err) {
+    res.status(err.status || 500).send({
+      message: err.message
+    });
+  }
+});
 
 /*404 HANDLER */
 app.use((req, res) => {

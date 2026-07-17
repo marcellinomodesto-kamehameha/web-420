@@ -3,7 +3,7 @@ const app = require("../src/app");
 
 describe("Chapter 3: API Tests", () => {
 
-  /* GET ALL BOOKS*/
+  /* GET ALL BOOKS */
   test("Should return an array of books", async () => {
 
     const response = await request(app)
@@ -16,8 +16,7 @@ describe("Chapter 3: API Tests", () => {
 
   });
 
-
-  /* GET SINGLE BOOK*/
+  /* GET SINGLE BOOK */
   test("Should return a single book", async () => {
 
     const response = await request(app)
@@ -30,8 +29,7 @@ describe("Chapter 3: API Tests", () => {
 
   });
 
-
-  /* INVALID ID TEST*/
+  /* INVALID ID TEST */
   test("Should return a 400 error if id is not a number", async () => {
 
     const response = await request(app)
@@ -42,12 +40,13 @@ describe("Chapter 3: API Tests", () => {
     expect(response.body)
       .toHaveProperty("message");
 
-    });
+  });
+
 });
 
 describe("Chapter 4: API Tests", () => {
 
-  /* CREATE BOOK (POST)*/
+  /* CREATE BOOK (POST) */
   test("Should return a 201-status code when adding a new book", async () => {
 
     const response = await request(app)
@@ -65,8 +64,7 @@ describe("Chapter 4: API Tests", () => {
 
   });
 
-
-  /* RETURN MISSING TITLE*/
+  /* RETURN MISSING TITLE */
   test("Should return a 400-status code when adding a new book with missing title", async () => {
 
     const response = await request(app)
@@ -83,8 +81,7 @@ describe("Chapter 4: API Tests", () => {
 
   });
 
-
-  /* DELETE BOOK*/
+  /* DELETE BOOK */
   test("Should return a 204-status code when deleting a book", async () => {
 
     const response = await request(app)
@@ -98,7 +95,7 @@ describe("Chapter 4: API Tests", () => {
 
 describe("Chapter 5: API Tests", () => {
 
-  /* UPDATE BOOK*/
+  /* UPDATE BOOK */
   test("Should update a book and return 204-status code", async () => {
 
     const response = await request(app)
@@ -115,29 +112,88 @@ describe("Chapter 5: API Tests", () => {
   /* INVALID ID */
   test("Should return a 400-status code when using a non-numeric id", async () => {
 
-        const response = await request(app)
-            .put("/api/books/foo")
-            .send({
-                title: "Updated Book",
-                author: "Updated Author"
-            });
+    const response = await request(app)
+      .put("/api/books/foo")
+      .send({
+        title: "Updated Book",
+        author: "Updated Author"
+      });
 
-        expect(response.status).toEqual(400);
-        expect(response.body.message).toEqual("Input must be a number");
+    expect(response.status).toEqual(400);
 
-    });
-    /* MISSING TITLE */
-    test("Should return a 400-status code when updating a book with a missing title", async () => {
+    expect(response.body)
+      .toHaveProperty("message", "Input must be a number");
 
-        const response = await request(app)
-            .put("/api/books/2")
-            .send({
-                author: "Updated Author"
-            });
+  });
 
-        expect(response.status).toEqual(400);
-        expect(response.body.message).toEqual("Bad Request");
+  /* MISSING TITLE */
+  test("Should return a 400-status code when updating a book with a missing title", async () => {
 
-    });
+    const response = await request(app)
+      .put("/api/books/2")
+      .send({
+        author: "Updated Author"
+      });
+
+    expect(response.status).toEqual(400);
+
+    expect(response.body)
+      .toHaveProperty("message", "Bad Request");
+
+  });
+
+});
+
+describe("Chapter 6: API Tests", () => {
+
+  /* LOGIN USER */
+  test("Should log a user in and return a 200-status code", async () => {
+
+    const response = await request(app)
+      .post("/api/login")
+      .send({
+        email: "harry@hogwarts.edu",
+        password: "potter"
+      });
+
+    expect(response.status).toEqual(200);
+
+    expect(response.body)
+      .toHaveProperty("message", "Authentication successful");
+
+  });
+
+  /* INVALID LOGIN */
+  test("Should return a 401-status code when logging in with incorrect credentials", async () => {
+
+    const response = await request(app)
+      .post("/api/login")
+      .send({
+        email: "harry@hogwarts.edu",
+        password: "wrongpassword"
+      });
+
+    expect(response.status).toEqual(401);
+
+    expect(response.body)
+      .toHaveProperty("message", "Unauthorized");
+
+  });
+
+  /* MISSING EMAIL OR PASSWORD */
+  test("Should return a 400-status code when missing email or password", async () => {
+
+    const response = await request(app)
+      .post("/api/login")
+      .send({
+        email: "harry@hogwarts.edu"
+      });
+
+    expect(response.status).toEqual(400);
+
+    expect(response.body)
+      .toHaveProperty("message", "Bad Request");
+
+  });
 
 });
