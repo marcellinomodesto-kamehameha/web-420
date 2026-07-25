@@ -197,3 +197,64 @@ describe("Chapter 6: API Tests", () => {
   });
 
 });
+
+describe("Chapter 7: API Tests", () => {
+
+  /* VERIFY SECURITY QUESTIONS */
+  test("Should return a 200-status code when security questions are answered correctly", async () => {
+
+    const response = await request(app)
+      .post("/api/users/harry@hogwarts.edu/verify-security-question")
+      .send([
+        { answer: "Hedwig" },
+        { answer: "Quidditch Through the Ages" },
+        { answer: "Evans" }
+      ]);
+
+    expect(response.status).toEqual(200);
+
+    expect(response.body)
+      .toHaveProperty(
+        "message",
+        "Security questions successfully answered"
+      );
+
+  });
+
+  /* INVALID REQUEST BODY */
+  test("Should return a 400-status code when the request body fails validation", async () => {
+
+    const response = await request(app)
+      .post("/api/users/harry@hogwarts.edu/verify-security-question")
+      .send([
+        {
+          question: "What is your pet's name?"
+        }
+      ]);
+
+    expect(response.status).toEqual(400);
+
+    expect(response.body)
+      .toHaveProperty("message", "Bad Request");
+
+  });
+
+  /* INCORRECT SECURITY QUESTIONS */
+  test("Should return a 401-status code when the security questions are incorrect", async () => {
+
+    const response = await request(app)
+      .post("/api/users/harry@hogwarts.edu/verify-security-question")
+      .send([
+        { answer: "Wrong" },
+        { answer: "Wrong" },
+        { answer: "Wrong" }
+      ]);
+
+    expect(response.status).toEqual(401);
+
+    expect(response.body)
+      .toHaveProperty("message", "Unauthorized");
+
+  });
+
+});

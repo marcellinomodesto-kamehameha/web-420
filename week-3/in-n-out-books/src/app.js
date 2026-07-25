@@ -9,6 +9,8 @@ const express = require("express");
 const books = require("../Database/books");
 const users = require("../Database/users");
 const bcrypt = require("bcryptjs");
+const Ajv = require("ajv");
+const ajv = new Ajv();
 
 const app = express();
 
@@ -288,6 +290,67 @@ app.post ("/api/login", async (req, res) => {
 
   } catch (err) {
     res.status(err.status || 500).send({
+      message: err.message
+    });
+  }
+});
+
+/* VERIFY SECURITY QUESTIONS */
+app.post("/api/users/:email/verify-security-question", async (req, res) => {
+  try {
+
+    /* AJV VALIDATION */
+    const schema = {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          answer: { type: "string" }
+        },
+        required: ["answer"],
+        additionalProperties: false
+      }
+    };
+
+    const validate = ajv.compile(schema);
+
+    if (!validate(req.body)) {
+      return res.status(400).send({
+        message: "Bad Request"
+      });
+    }
+
+    /* FIND USER */
+    const user = await users.findOne({
+      email: req.params.email
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        message: "Unauthorized"
+      });
+    }
+
+    /* VERIFY SECURITY QUESTION ANSWERS */
+    const isValid = req.body.every((question, index) => {
+      return (
+        user.securityQuestions[index] &&
+        question.answer === user.securityQuestions[index].answer
+      );
+    });
+
+    if (!isValid) {
+      return res.status(401).send({
+        message: "Unauthorized"
+      });
+    }
+
+    res.status(200).send({
+      message: "Security questions successfully answered"
+    });
+
+  } catch (err) {
+    res.status(500).send({
       message: err.message
     });
   }
