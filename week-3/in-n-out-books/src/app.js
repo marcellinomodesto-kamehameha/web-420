@@ -89,12 +89,6 @@ app.get("/", (req, res) => {
         <p>A new and simple way to manage your book collection.</p>
       </header>
 
-      <nav>
-        <a href="/">Home</a>
-        <a href="#">Books</a>
-        <a href="#">Collection</a>
-      </nav>
-
       <main>
         <section>
           <h2>About In-N-Out-Books</h2>
